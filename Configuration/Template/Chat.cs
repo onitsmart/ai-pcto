@@ -22,21 +22,27 @@ namespace Template
 
             var agent = new ChatCompletionAgent()
             {
-                Name = "",
-                Instructions = "",
+                Name = "BASE_AGENT",
+                Instructions = "Answer as best as you can.",
                 Kernel = _kernel,
-                //Arguments = new KernelArguments(
-                //    new OpenAIPromptExecutionSettings()
-                //    {
-                //        FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-                //    }),
+                Arguments = new KernelArguments(
+                    new OpenAIPromptExecutionSettings()
+                    {
+                        FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+                    }),
             };
 
             var selectionFunction = KernelFunctionFactory.CreateFromPrompt(
-                $$$"""
+                """
+                    You are the function that selects which agent to call. 
+                Available agents:
+                {{$agents}}
 
-                History:
-                {{$History}}
+                Conversation history:   
+                {{$history}}
+
+                Always return exactly this agent name and nothing else:
+                BASE_AGENT
                 """);
 
             _chat = new(agent)
